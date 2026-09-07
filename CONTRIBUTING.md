@@ -39,7 +39,7 @@ GuardStep currently requires Node.js 22 or newer.
 Install the project dependencies:
 
 ```bash
-npm install
+npm ci
 ```
 
 Build the project:
@@ -48,10 +48,16 @@ Build the project:
 npm run build
 ```
 
-Run the type and generated-output checks:
+Run the type checks:
 
 ```bash
 npm run check
+```
+
+Verify that generated contracts are up to date:
+
+```bash
+npm run check:generated
 ```
 
 Run the test suite:
