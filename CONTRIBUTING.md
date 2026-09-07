@@ -4,12 +4,12 @@ GuardStep is still in research and design. Concrete use cases and design critici
 
 ## Ways to contribute
 
-- Describe a real AI workflow and the failure cases it must handle.
-- Compare the proposal with an existing language or framework.
-- Challenge a security, type-system, or runtime assumption.
-- Propose syntax with examples and counterexamples.
-- Improve documentation and reference applications.
-- Implement an issue that maintainers have marked ready.
+* Describe a real AI workflow and the failure cases it must handle.
+* Compare the proposal with an existing language or framework.
+* Challenge a security, type-system, or runtime assumption.
+* Propose syntax with examples and counterexamples.
+* Improve documentation and reference applications.
+* Implement an issue that maintainers have marked ready.
 
 ## Before writing a large change
 
@@ -86,11 +86,11 @@ The `./gs` wrapper is intended for repository development. Installed GuardStep p
 
 ## Documentation standard
 
-- Separate implemented behavior from proposals.
-- Link factual comparisons to primary project documentation or specifications.
-- Record the date for research that can become stale.
-- Prefer concrete nouns and verbs over promotional claims.
-- Do not claim that GuardStep is safer, faster, or simpler without a reproducible comparison.
+* Separate implemented behavior from proposals.
+* Link factual comparisons to primary project documentation or specifications.
+* Record the date for research that can become stale.
+* Prefer concrete nouns and verbs over promotional claims.
+* Do not claim that GuardStep is safer, faster, or simpler without a reproducible comparison.
 
 ## Developer Certificate of Origin
 
@@ -105,3 +105,15 @@ Report conduct concerns privately to [haseebahmed6621@gmail.com](mailto:haseebah
 ## License
 
 By contributing, you agree that your contributions will be licensed under Apache License 2.0, except changes to [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), which are licensed under CC BY-SA 4.0 as stated in that document.
+
+## Verification
+
+* `npm ci` — passed
+* `npm run build` — passed
+* `npm run check` — passed
+* `./gs generate examples/document-qa/answer.guard --check` — passed
+* `npm test` — 106/121 passed on Windows; the 15 failures are caused by the Node `NO_COLOR`/`FORCE_COLOR` warning being included in CLI diagnostic output
+* Working tree is clean after verification
+
+Closes #21
+
