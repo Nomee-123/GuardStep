@@ -162,6 +162,7 @@ export class Parser {
 
   private parseLimits(): WorkflowLimits {
     this.consumeValue("{", "Expected '{' after limits");
+    const names = new Set<string>();
     let toolCalls: number | undefined;
     let modelCalls: number | undefined;
     let duration: WorkflowLimits["duration"] | undefined;
@@ -169,6 +170,8 @@ export class Parser {
 
     while (!this.checkValue("}")) {
       const limit = this.consumeKind("identifier", "Expected limit name");
+      if (names.has(limit.value)) this.fail(limit, "GS1101", `Duplicate limit '${limit.value}'`);
+      names.add(limit.value);
       this.consumeValue("<=", "Expected '<=' after limit name");
       const maximum = Number(this.consumeKind("number", "Expected numeric limit").value);
       if (limit.value === "tool_calls") toolCalls = maximum;
@@ -213,8 +216,11 @@ export class Parser {
     const tool = this.parseQualifiedName();
     this.consumeValue("(", "Expected '(' after tool name");
     const argumentsMap: Record<string, Expression> = {};
+    const names = new Set<string>();
     while (!this.checkValue(")")) {
       const name = this.consumeKind("identifier", "Expected tool argument name");
+      if (names.has(name.value)) this.fail(name, "GS1101", `Duplicate tool argument '${name.value}'`);
+      names.add(name.value);
       this.consumeValue(":", "Expected ':' after tool argument name");
       argumentsMap[name.value] = this.parseExpression();
       if (!this.matchValue(",")) break;
@@ -264,8 +270,11 @@ export class Parser {
     this.consumeValue(":", "Expected ':' after context");
     this.consumeValue("{", "Expected '{' before model context");
     const context: Record<string, Expression> = {};
+    const names = new Set<string>();
     while (!this.checkValue("}")) {
       const name = this.consumeKind("identifier", "Expected context field name");
+      if (names.has(name.value)) this.fail(name, "GS1101", `Duplicate model context key '${name.value}'`);
+      names.add(name.value);
       this.consumeValue(":", "Expected ':' after context field name");
       context[name.value] = this.parseExpression();
       this.matchValue(",");
@@ -377,6 +386,14 @@ export class Parser {
     if (this.matchValue("true")) return { kind: "literal", value: true };
     if (this.matchValue("false")) return { kind: "literal", value: false };
     if (this.matchValue("null")) return { kind: "literal", value: null };
+    if (this.checkValue("call") || this.checkValue("generate")) {
+      const effect = this.advance();
+      this.fail(
+        effect,
+        "GS2004",
+        `Effect '${effect.value}' is not allowed in a pure expression; assign it to a workflow step`,
+      );
+    }
     if (this.matchValue("(")) {
       const expression = this.parseExpression();
       this.consumeValue(")", "Expected ')' after expression");

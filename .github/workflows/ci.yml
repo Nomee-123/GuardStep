@@ -47,11 +47,21 @@ jobs:
       - name: Run tests
         run: npm test
 
+      - name: Test release validation
+        run: npm run test:release
+
   package:
-    name: Inspect npm package
+    name: Package (${{ matrix.os }})
     needs: quality
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
 
     steps:
       - name: Check out repository
